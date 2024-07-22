@@ -1,0 +1,15 @@
+Django
+django-ninja
+Rav
+django-ninja-jwt
+Django-Ninja-Extra
+djangorestframework
+django-rest-framework-simplejwt
+django-celery-email
+pydantic[email]
+celery 
+redis
+dj-rest-auth
+django-rest-passwordreset 
+django-cors-headers
+psycopg2-binary
