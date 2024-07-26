@@ -13,6 +13,9 @@ scripts:
     - cd bus_ticket_platform && python manage.py startapp api
   auth_app:
     - cd bus_ticket_platform && python manage.py startapp auth_app
+  test:
+    - cd bus_ticket_platform && python manage.py test
+
   curl_auth:
     - powershell -ExecutionPolicy Bypass -Command "$response = Invoke-RestMethod -Method Post -Uri 'http://127.0.0.1:8001/api/token/pair' -Headers @{ 'Content-Type'='application/json' } -Body '{\"username\":\"admin\", \"password\":\"password\"}'; $response | ConvertTo-Json"
   curl_protect:
