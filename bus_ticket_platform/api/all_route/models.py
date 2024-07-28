@@ -15,8 +15,6 @@ class Route(models.Model):
     start_point = models.CharField(max_length=255)
     end_point = models.CharField(max_length=255)
     distance = models.FloatField()
-    duration = models.IntegerField(default=0)
-    price = models.FloatField(default=0.0)
     trip_type = models.CharField(
         max_length=255, choices=TRIP_TYPE_CHOICES, default='one_way_trip')
     user = models.ForeignKey(User, on_delete=models.CASCADE)

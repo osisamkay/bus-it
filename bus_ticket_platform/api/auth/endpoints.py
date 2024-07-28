@@ -5,6 +5,7 @@ from django.contrib.auth.hashers import make_password
 from rest_framework.authtoken.models import Token
 from ninja.security import HttpBearer
 from ninja.errors import HttpError
+from .models import UserProfile
 from .schemas import SignUpSchema, LoginSchema
 
 router = Router()
@@ -19,17 +20,19 @@ class AuthBearer(HttpBearer):
             raise HttpError(401, "Invalid token")
 
 
-@router.post("/signup")
+@router.post("/signup", response={200: dict, 400: dict}, tags=["Authentication"])
 def signup(request, payload: SignUpSchema):
-    user = User.objects.create(
-        username=payload.username,
-        password=make_password(payload.password),
-        email=payload.email
-    )
-    return {"message": "User created successfully"}
+    try:
+        user = User.objects.create_user(
+            **payload.dict(exclude={"company", "contact_number", "company_logo_url", "company_slogan", "user_type"}))
+        UserProfile.objects.create(user=user, **payload.dict(include={
+                                   "company", "contact_number", "company_logo_url", "company_slogan", "user_type"}))
+        return {"message": "User created successfully"}
+    except Exception as e:
+        return {"message": str(e)}, 400
 
 
-@router.post("/login")
+@router.post("/login", tags=["Authentication"])
 def login(request, payload: LoginSchema):
     user = authenticate(username=payload.username, password=payload.password)
     if user is not None:
@@ -39,6 +42,6 @@ def login(request, payload: LoginSchema):
         raise HttpError(401, "Invalid credentials")
 
 
-@router.get("/secure-endpoint", auth=AuthBearer())
+@router.get("/secure-endpoint", auth=AuthBearer(), tags=["Authentication"])
 def secure_endpoint(request):
     return {"message": f"Hello, {request.auth.username}!"}

@@ -1,20 +1,27 @@
-from ninja import Schema
 from typing import List
 from uuid import UUID
+from pydantic import BaseModel, EmailStr, Field
+from typing import Optional
+from enum import Enum
 
 
-class CreateRouteSchema(Schema):
-    """Schema for creating a new route."""
+class TripType(str, Enum):
+    one_way_trip = 'one_way_trip'
+    round_trip = 'round_trip'
+
+
+class CreateRouteSchema(BaseModel):
+    """BaseModel for creating a new route."""
     name: str
     description: str
     start_point: str
     end_point: str
     distance: float
-    trip_type: str
+    trip_type: Optional[TripType] = None
 
 
-class RouteSchema(Schema):
-    """Schema for representing a route."""
+class RouteSchema(BaseModel):
+    """BaseModel for representing a route."""
     id: UUID
     name: str
     description: str
@@ -26,29 +33,29 @@ class RouteSchema(Schema):
     trip_type: str
 
 
-class PaginatedRoutesSchema(Schema):
-    """Schema for representing a paginated response of routes."""
+class PaginatedRoutesSchema(BaseModel):
+    """BaseModel for representing a paginated response of routes."""
     total: int
     page: int
     size: int
     routes: List[RouteSchema]
 
 
-class OneWayTripsSchema(Schema):
-    """Schema for representing a list of one-way trips."""
+class OneWayTripsSchema(BaseModel):
+    """BaseModel for representing a list of one-way trips."""
     routes: List[RouteSchema]
 
 
-class RoundTripsSchema(Schema):
-    """Schema for representing a list of round trips."""
+class RoundTripsSchema(BaseModel):
+    """BaseModel for representing a list of round trips."""
     routes: List[RouteSchema]
 
 
-class SearchResponse(Schema):
-    """Schema for representing the search response of routes."""
+class SearchResponse(BaseModel):
+    """BaseModel for representing the search response of routes."""
     routes: List[RouteSchema]
 
 
-class ErrorResponse(Schema):
-    """Schema for representing an error response."""
+class ErrorResponse(BaseModel):
+    """BaseModel for representing an error response."""
     detail: str
